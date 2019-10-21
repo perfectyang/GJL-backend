@@ -37,7 +37,7 @@ class Upload {
      * @return bool        如果上传成功返回数true
      */
 
-    function upload($fileField) {
+    function uploadUrl($fileField) {
         $return = true;
         /* 检查文件路径是滞合法 */
         if( !$this->checkFilePath() ) {
@@ -85,6 +85,7 @@ class Upload {
                     }
                 }
                 $this->newFileName = $fileNames;
+
             }
             $this->errorMess = $errors;
             return $return;
@@ -122,7 +123,11 @@ class Upload {
      * @return string 上传后，新文件的名称， 如果是多文件上传返回数组
      */
     public function getFileName(){
-        return $this->newFileName;
+       return $this->newFileName;
+    }
+
+    public function getUrl() {
+       return '/uploads'.'/'.$this->getFileName();
     }
 
     /**
@@ -216,6 +221,7 @@ class Upload {
 
     /* 设置随机文件名 */
     private function proRandName() {
+        date_default_timezone_set("UTC");
         $fileName = date('YmdHis')."_".rand(100,999);
         return $fileName.'.'.$this->fileType;
     }
@@ -235,4 +241,6 @@ class Upload {
             return false;
         }
     }
+
+
 }

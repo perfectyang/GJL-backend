@@ -6,7 +6,6 @@ class MY_Model extends CI_Model {
     public function __construct() {
         parent::__construct();
     }
-
     public function formate_result ($param) {
       $data = [
         "code" => $param["code"] ? 0 : 1,
@@ -18,14 +17,11 @@ class MY_Model extends CI_Model {
 
     // 查询
 
-    public function query_sql($table, $field = '*' , $where = array() , $limit = 1 , $offset = Null , $order = '' , $group = '') {
+    public function query_sql($table, $field = '*' , $where = array() , $order = '' , $group = '') {
       $this->db->from($table);
       $this->db->select( $field );
       $this->db->like( $where );
       $this->db->where( $where );
-      if (intval( $limit ) > 0) {
-        $this->db->limit( $limit , $offset);
-      }
       if ( !empty( $order)) {
         $this->db->order_by( $order);
       }
@@ -33,7 +29,11 @@ class MY_Model extends CI_Model {
         $this->db->group_by( $group );
       }
       $rec = $this->db->get();
-      return $rec->result_array();
+      $list = $rec->result_array();
+      return $this->formate_result([
+        "code" => count($list),
+        "data" => $list
+      ]);
   }
 
     // 增加

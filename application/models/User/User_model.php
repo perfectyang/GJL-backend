@@ -2,8 +2,7 @@
 
 class User_model extends MY_Model {
 
-    public function get_user() {
-      // $sql="select * from account";
+    public function user_list() {
       return $this->query_sql('account', "*", []);
     }
 
@@ -16,26 +15,33 @@ class User_model extends MY_Model {
 
 
     public function register($param) {
-      $result = $this->insert_sql('account', ["user_name" => $param["user_name"], "pwd" => $param["pwd"]]);
+      unset($param['token_id']);
+      $result = $this->insert_sql('account', $param);
       return $result;
     }
 
 
     public function login($param) {
       $result = $this->query_sql('account', "*", ['user_name' => $param["user_name"], 'pwd' => $param["pwd"]]);
-      $len = count($result);
-      $back = [
-        "code" => $len
-      ];
-      if ($len) {
-        $info = $result[0];
+      if (!$result['code']) {
+        $info = $result["data"][0];
         $back["data"] = [
           "user_name" => $info["user_name"],
-          "avatar" => $info["avatar"] ? $info["avatar"] : ""
+          "avatar" => $info["avatar"] ? $info["avatar"] : "",
+          "token_id" => '1111'
         ];
-      } else {
-        $back["data"] = [];
+        $this->session->set_userdata('user_info', $back);
       }
+      return $result;
+    }
+
+    public function logout($param) {
+      $back = [
+        "code" => 1,
+        "data" => [],
+        "message" => "退出成功"
+      ];
+      $this->session->unset_userdata('user_info', $back);
       return $this->formate_result($back);
     }
 }
