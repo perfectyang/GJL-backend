@@ -157,7 +157,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 
 			// Needed by write() to detect session_regenerate_id() calls
 			$this->_session_id = $session_id;
-
+			// print_r($this->_config);
 			$this->_db
 				->select('data')
 				->from($this->_config['save_path'])
